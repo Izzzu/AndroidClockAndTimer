@@ -7,23 +7,30 @@
         android:layout_height="match_parent"
         tools:context="com.example.izabela.analogdigitalclock.MainActivity">
 
-    <TimePicker
+    <NumberPicker
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_marginLeft="76dp"
             android:timePickerMode="spinner"
-            android:id="@+id/timePicker"/>
-    <TimePicker
-            android:id="@+id/timePicker_Sec"
+            android:layout_toLeftOf="@+id/minPicker"
+
+            android:inputType="time"
+            android:id="@+id/hoursPicker"/>
+    <NumberPicker
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_alignTop="@+id/timePicker"
-            android:layout_marginLeft="0dp"
             android:timePickerMode="spinner"
-    />
-
+            android:inputType="time"
+            android:id="@+id/minPicker"/>
+    <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:timePickerMode="spinner"
+            android:layout_toRightOf="@+id/minPicker"
+            android:inputType="time"
+            android:id="@+id/secPicker"/>
 
     <TextView
             android:id="@+id/countdown"
@@ -32,7 +39,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/timePicker"
+            android:layout_below="@+id/hoursPicker"
             android:layout_marginTop="50px"
             android:textColor="@android:color/holo_blue_light"/>
 

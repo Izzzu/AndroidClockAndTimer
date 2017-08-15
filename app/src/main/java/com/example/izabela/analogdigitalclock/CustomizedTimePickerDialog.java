@@ -10,14 +10,14 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomizedTimePicker extends TimePickerDialog {
+public class CustomizedTimePickerDialog extends TimePickerDialog {
 
     private TimePicker timePicker;
     private final OnTimeSetListener callback;
 
     private int initialMinutes;
 
-    public CustomizedTimePicker(Context context, OnTimeSetListener callBack, int minutes, int seconds) {
+    public CustomizedTimePickerDialog(Context context, OnTimeSetListener callBack, int minutes, int seconds) {
         super(context, callBack, minutes, seconds, true); // the last argument removes the am/pm spinner
         this.callback = callBack;
         this.initialMinutes = minutes; // we'll have to set this again after modifying the "hours" spinner
