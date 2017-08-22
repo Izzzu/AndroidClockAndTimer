@@ -1,13 +1,16 @@
 package com.example.izabela.analogdigitalclock;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.NumberPicker;
-import android.widget.TextView;
+import android.widget.*;
 
 import static com.example.izabela.analogdigitalclock.R.id.countdown;
 
@@ -19,10 +22,25 @@ public class MainActivity extends AppCompatActivity {
     NumberPicker minPicker;
     NumberPicker secPicker;
 
+    AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+
+    private static final int requestCode = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final Button btn = new Button(this);
+        btn.setText("stop alarm");
+        btn.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT));
+
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent myIntent = new Intent(MainActivity.this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, requestCode, myIntent, 0);
 
         //final EditText countdownNumber = (EditText) findViewById(R.id.countSecondsNumber);
         final TextView countdownView = (TextView) findViewById(countdown);
@@ -38,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         View.OnClickListener onClickStartTimerListener = new View.OnClickListener() {
 
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
                 long secFromTimePicker = hoursPicker.getValue() * 60 * 60 + minPicker.getValue() * 60 + secPicker.getValue();
@@ -48,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
                     stopCountingButton.setEnabled(true);
                     countDownTimer = getCountDownTimer(secFromTimePicker * 1000);
                     countDownTimer.start();
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, secFromTimePicker*1000, pendingIntent);
+
                 }
             }
 
@@ -76,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                         setEnableTimePickers(true);
                         startCountingButton.setEnabled(true);
                         resetPickers();
+
                     }
                 };
             }
@@ -97,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
         };
 
         stopCountingButton.setOnClickListener(onclickStopTimerListener);
+
+
 
 
     }
