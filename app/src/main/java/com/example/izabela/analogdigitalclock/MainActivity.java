@@ -1,8 +1,8 @@
 package com.example.izabela.analogdigitalclock;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -10,7 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import static com.example.izabela.analogdigitalclock.R.id.countdown;
 
@@ -22,10 +24,8 @@ public class MainActivity extends AppCompatActivity {
     NumberPicker minPicker;
     NumberPicker secPicker;
 
-    AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
+    static Ringtone ringtone;
 
-    private static final int requestCode = 0;
 
 
     @Override
@@ -33,16 +33,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Button btn = new Button(this);
-        btn.setText("stop alarm");
-        btn.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT));
-
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent myIntent = new Intent(MainActivity.this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, requestCode, myIntent, 0);
-
-        //final EditText countdownNumber = (EditText) findViewById(R.id.countSecondsNumber);
         final TextView countdownView = (TextView) findViewById(countdown);
         minPicker = (NumberPicker) findViewById(R.id.minPicker);
         secPicker = (NumberPicker) findViewById(R.id.secPicker);
@@ -67,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
                     stopCountingButton.setEnabled(true);
                     countDownTimer = getCountDownTimer(secFromTimePicker * 1000);
                     countDownTimer.start();
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, secFromTimePicker*1000, pendingIntent);
 
                 }
             }
@@ -97,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         setEnableTimePickers(true);
                         startCountingButton.setEnabled(true);
                         resetPickers();
+                        playAlarm();
 
                     }
                 };
@@ -114,15 +104,20 @@ public class MainActivity extends AppCompatActivity {
                 resetPickers();
                 countdownView.setText("");
                 countDownTimer.cancel();
+                ringtone.stop();
 
             }
         };
 
         stopCountingButton.setOnClickListener(onclickStopTimerListener);
+        
 
+    }
 
-
-
+    private void playAlarm() {
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
+        ringtone.play();
     }
 
     private void resetPickers() {
